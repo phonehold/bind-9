@@ -1140,6 +1140,10 @@ ns_client_error(ns_client_t *client, isc_result_t result) {
 		int log_level, prefixlen;
 		const char *lo_str, *rep_str;
 
+		ns_client_log(client, DNS_LOGCATEGORY_RRL,
+			      NS_LOGMODULE_CLIENT, ISC_LOG_DEBUG(1),
+			      "checking rate limit for error response");
+
 		rrl_result = dns_rrl(client->view->rrl, &client->peeraddr,
 				     client->message->rdclass,
 				     dns_rdatatype_none, NULL, ISC_TRUE,

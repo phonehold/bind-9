@@ -5687,6 +5687,19 @@ query_find(ns_client_t *client, dns_fetchevent_t *event, dns_rdatatype_t qtype)
 		int log_level, prefixlen;
 		dns_rrl_result_t rrl_result;
 
+		log_level = ISC_LOG_DEBUG(1);
+		if (isc_log_wouldlog(ns_g_lctx, log_level)) {
+			if (fname == NULL || !dns_name_isabsolute(fname)) {
+				for_str = "(relative?)";
+			} else {
+				dns_name_format(fname, fnamebuf, sizeof(fnamebuf));
+				for_str = fnamebuf;
+			}
+			ns_client_log(client, DNS_LOGCATEGORY_RRL,
+				      NS_LOGMODULE_CLIENT, log_level,
+				      "checking rate limit for %s", for_str);
+		}
+
 		rrl_result = dns_rrl(client->view->rrl, &client->peeraddr,
 				     client->message->rdclass, qtype, fname,
 				     ISC_FALSE, client->now);
